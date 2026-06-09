@@ -44,3 +44,16 @@ app.add_handler(CommandHandler("lien", lien))
 app.add_handler(CommandHandler("aide", aide))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, message_auto))
 app.run_polling()
+from telegram.ext import MessageHandler, filters
+
+async def bienvenue(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    for user in update.message.new_chat_members:
+        await update.message.reply_text(
+            f"Bienvenue {user.first_name} ! 🎉\n\n"
+            f"Code promo SHEIN : {CODE}\n"
+            f"Mes sélections : {LINKTREE}"
+        )
+
+app.add_handler(
+    MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, bienvenue)
+)
