@@ -4,6 +4,8 @@ from telegram import Update
 TOKEN = "8556419775:AAHcY3Q5GmmsWyc_F96_67qkdSKfm3WSpg0"
 CODE = "CV8UF"
 LINKTREE = "https://linktr.ee/Actusmode"
+ADMIN_ID = 5653407972
+CANAL = "@bonplansshein"
 
 async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -31,7 +33,22 @@ async def aide(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("/start\n/code\n/lien\n/aide")
 
 async def message_auto(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
     texte = update.message.text.lower()
+
+    if user_id == ADMIN_ID:
+        if texte.startswith("publier "):
+            lien_affilie = update.message.text[8:]
+            await ctx.bot.send_message(
+                chat_id=CANAL,
+                text="Bon plan SHEIN !\n\n"
+                     + lien_affilie + "\n\n"
+                     "Code promo : " + CODE + "\n"
+                     "Toutes mes selections : " + LINKTREE
+            )
+            await update.message.reply_text("Publie sur le canal !")
+            return
+
     if any(w in texte for w in ["code", "promo"]):
         await code(update, ctx)
     else:
@@ -44,7 +61,7 @@ app.add_handler(CommandHandler("lien", lien))
 app.add_handler(CommandHandler("aide", aide))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, message_auto))
 app.run_polling()
-from telegram.ext import MessageHandler, filters
+
 
 async def bienvenue(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     for user in update.message.new_chat_members:
